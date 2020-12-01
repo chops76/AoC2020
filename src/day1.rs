@@ -1,20 +1,30 @@
-use std::fs::read_to_string;
+use itertools::Itertools;
+use std::io::{BufRead, BufReader};
+use std::fs::File;
 
-fn test_add_1(val: u64) -> u64 {
-	val + 1
+type Input = Vec<u32>;
+
+fn parse_input() -> Input {
+    let path = "./input/day1/input1.txt";
+    let f = File::open(path).unwrap();
+    BufReader::new(f).lines().flatten().map(|s| s.parse().unwrap()).collect()
+}
+
+fn part1(nums: &Input) -> u32 {
+	nums.iter().combinations(2).filter(|x| x[0]+x[1] == 2020)
+	     .map(|x| x[0]*x[1]).sum()
+}
+
+fn part2(nums: &Input) -> u32 {
+	nums.iter().combinations(3).filter(|x| x[0]+x[1]+x[2] == 2020)
+	     .map(|x| x[0]*x[1]*x[2]).sum()
 }
 
 pub fn main() {
-	let input = read_to_string("input/day1/input1.txt").unwrap();
+	let nums = parse_input();
 
-	let mut input_sum = 0;
-
-	for line in input.lines() {
-		let num: u64 = line.parse().unwrap();
-		input_sum += test_add_1(num);
-	}
-
-	println!("Boilerplate Input: {}", input_sum);
+	println!("Part 1: {}", part1(&nums));
+	println!("Part 2: {}", part2(&nums));
 }
 
 #[cfg(test)]
@@ -24,16 +34,11 @@ mod tests {
 
 	#[test]
 	fn day1_test1() {
-		assert_eq!(1, test_add_1(0));
+		assert_eq!(part1(&vec![1721,979,366,299,675,1456]), 514579);
 	}
 
 	#[test]
 	fn day1_test2() {
-		assert_eq!(1000, test_add_1(999));
-	}
-
-	#[test]
-	fn day1_test3() {
-		assert_eq!(101, test_add_1(100));
+		assert_eq!(part2(&vec![1721,979,366,299,675,1456]), 241861950);
 	}
 }
