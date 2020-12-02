@@ -51,15 +51,8 @@ fn num_valid2(pw_rules: &Input) -> u32 {
 
 fn valid2(rule: &Password) -> bool
 {
-	let mut result_sum = 0;
-	if rule.pw_text.as_bytes()[(rule.let_min-1) as usize] == rule.letter {
-		result_sum += 1;
-	}
-	if rule.pw_text.as_bytes()[(rule.let_max-1) as usize] == rule.letter {
-		result_sum += 1;
-	}
-
-	result_sum == 1
+	(rule.pw_text.as_bytes()[(rule.let_min-1) as usize] == rule.letter) !=
+		(rule.pw_text.as_bytes()[(rule.let_max-1) as usize] == rule.letter)
 }
 
 pub fn main() {
