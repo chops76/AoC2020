@@ -11,13 +11,13 @@ fn parse_input() -> Input {
 }
 
 fn part1(nums: &Input) -> u32 {
-	nums.iter().combinations(2).filter(|x| x[0]+x[1] == 2020)
-	     .map(|x| x[0]*x[1]).sum()
+	nums.iter().combinations(2).find(|x| x.iter().copied().sum::<u32>() == 2020).unwrap()
+	.iter().copied().product()
 }
 
 fn part2(nums: &Input) -> u32 {
-	nums.iter().combinations(3).filter(|x| x[0]+x[1]+x[2] == 2020)
-	     .map(|x| x[0]*x[1]*x[2]).sum()
+	nums.iter().combinations(3).find(|x| x.iter().copied().sum::<u32>() == 2020).unwrap()
+	.iter().copied().product()
 }
 
 pub fn main() {
