@@ -7,4 +7,4 @@ To run all days:
 cargo run
 
 To run one day:
-cargo run --bin day1
+cargo run 1
