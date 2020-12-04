@@ -1,4 +1,6 @@
-use std::io::{BufRead, BufReader};
+use lazy_static::lazy_static;
+use std::collections::HashSet;
+use std::io::Read;
 use std::fs::File;
 
 #[derive(Debug)]
@@ -17,26 +19,17 @@ struct Passport {
 type Input = Vec<Passport>;
 
 fn parse_input(path: &str) -> Input {
-	let f = File::open(path).unwrap();
-	let mut items = Vec::new();
+	let mut fstr = String::new();
+	File::open(path).unwrap().read_to_string(&mut fstr).unwrap();
 	let mut passports = Vec::new();
-	
-	for line in BufReader::new(f).lines().flatten() {
-		if line.len() == 0 {
-			passports.push(parse_items(&items));
-			items = Vec::new();
-		} else {
-			for item in line.split(' ') {
-				items.push(item.to_string());
-			}
-		}
-	}
-	passports.push(parse_items(&items));
 
+	for pp in fstr.split("\n\n") {
+		passports.push(parse_items(pp.split_ascii_whitespace().collect()));	
+	}
 	passports
 }
 
-fn parse_items(items: &Vec<String>) -> Passport {
+fn parse_items(items: Vec<&str>) -> Passport {
 	let mut passport: Passport = Default::default();
 	for field in items {
 		let vals: Vec<&str> = field.split(':').collect();
@@ -61,84 +54,53 @@ fn valid_pp(passport: &Passport) -> bool {
 		passport.pid != None 
 }
 
+fn validate_byr(byr: &str) -> bool {
+	byr.len() == 4 && (1920..=2002).contains(&byr.parse::<u32>().unwrap())
+}
+
+fn validate_iyr(iyr: &str) -> bool {
+	iyr.len() == 4 && (2010..=2020).contains(&iyr.parse::<u32>().unwrap())
+}
+
+fn validate_eyr(eyr: &str) -> bool {
+	eyr.len() == 4 && (2020..=2030).contains(&eyr.parse::<u32>().unwrap())
+}
+
+fn validate_hgt(hgt: &str) -> bool {
+	match hgt.split_at(hgt.len() - 2) {
+		(h, "cm") => (150..=193).contains(&h.parse::<u32>().unwrap()),
+		(h, "in") => (59..=76).contains(&h.parse::<u32>().unwrap()),
+		_ => false
+	}
+}
+
+fn validate_hcl(hcl: &str) -> bool {
+	hcl.chars().next() == Some('#') &&
+		hcl.chars().skip(1).all(|c| !c.is_uppercase() && c.is_ascii_hexdigit() )
+}
+
+fn validate_ecl(ecl: &str) -> bool {
+	lazy_static! {
+		static ref VALID_ECR: HashSet<&'static str> =
+			["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].iter().cloned().collect();
+	}
+
+	VALID_ECR.contains(ecl)
+}
+
+fn validate_pid(pid: &str) -> bool {
+	pid.len() == 9 && pid.chars().all(|c| c.is_numeric())
+}
+
 fn valid_pp2(passport: &Passport) -> bool {
-	if !(passport.byr != None && passport.iyr != None && passport.eyr != None &&
-		passport.hgt != None && passport.hcl != None && passport.ecl != None &&
-		passport.pid != None) {
-			return false;
-	}
-
-	let byr = passport.byr.as_ref().unwrap().parse();
-	if byr.is_err() {
-		return false;
-	}
-	let byr:u32 = byr.unwrap();
-	if byr < 1920 || byr > 2002 {
-		return false;
-	}
-
-	let iyr = passport.iyr.as_ref().unwrap().parse();
-	if iyr.is_err() {
-		return false;
-	}
-	let iyr:u32 = iyr.unwrap();
-	if iyr < 2010 || iyr > 2020 {
-		return false;
-	}
-
-	let eyr = passport.eyr.as_ref().unwrap().parse();
-	if eyr.is_err() {
-		return false;
-	}
-	let eyr:u32 = eyr.unwrap();
-	if eyr < 2020 || eyr > 2030 {
-		return false;
-	}
-
-	let hgt = passport.hgt.as_ref().unwrap();
-	if &hgt[hgt.len()-2..] == "cm" {
-		let val:u32 = hgt[..hgt.len()-2].parse().unwrap();
-		if val < 150 || val > 193 {
-			return false;
-		}
-	} else 	if &hgt[hgt.len()-2..] == "in" {
-		let val:u32 = hgt[..hgt.len()-2].parse().unwrap();
-		if val < 59 || val > 76 {
-			return false;
-		}
-	} else {
-		return false;
-	}
-
-	let hcl = passport.hcl.as_ref().unwrap().as_bytes();
-	if hcl.len() != 7 {
-		return false;
-	}
-	if hcl[0] != b'#' {
-		return false;
-	}
-	for i in 1..7 {
-		if !(hcl[i] as char).is_alphanumeric() {
-			return false;
-		}
-	}
-
-	let ecl = passport.ecl.as_ref().unwrap();
-	if ecl != "amb" && ecl != "blu" && ecl != "brn" && ecl != "gry" &&
-	   ecl != "grn" && ecl != "hzl" && ecl != "oth" {
-		   return false;
-	   }
-	
-	let pid = passport.pid.as_ref().unwrap().as_bytes();
-	if pid.len() != 9 {
-		return false;
-	}
-	for i in 0..9 {
-		if !(pid[i] as char).is_numeric() {
-			return false;
-		}
-	}
-	true
+	valid_pp(passport) && 
+		validate_byr(&passport.byr.as_ref().unwrap()) &&
+		validate_iyr(&passport.iyr.as_ref().unwrap()) && 
+		validate_eyr(&passport.eyr.as_ref().unwrap()) &&
+		validate_hgt(&passport.hgt.as_ref().unwrap()) &&
+		validate_hcl(&passport.hcl.as_ref().unwrap()) &&
+		validate_ecl(&passport.ecl.as_ref().unwrap()) &&
+		validate_pid(&passport.pid.as_ref().unwrap())
 }
 
 pub fn main() {
