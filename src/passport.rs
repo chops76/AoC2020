@@ -14,7 +14,6 @@ pub struct Passport {
 impl Passport
 {
     pub fn new(items: Vec<&str>) -> Self {
-        let tmp: Passport;
         let mut byr: Option<String> = None;
         let mut iyr: Option<String> = None;
         let mut eyr: Option<String> = None;
