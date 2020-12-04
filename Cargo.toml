@@ -3,7 +3,6 @@ name = "AoC2020"
 version = "0.1.0"
 authors = ["Dan <dchopskie@gmail.com>"]
 edition = "2018"
-default-run = "all"
 
 [dependencies]
 itertools = "0.9"
@@ -11,23 +10,3 @@ lazy_static = "1.4"
 
 [profile.release]
 lto = true
-
-[[bin]]
-name = "all"
-path = "src/all.rs"
-
-[[bin]]
-name = "day1"
-path = "src/day1.rs"
-
-[[bin]]
-name = "day2"
-path = "src/day2.rs"
-
-[[bin]]
-name = "day3"
-path = "src/day3.rs"
-
-[[bin]]
-name = "day4"
-path = "src/day4.rs"
