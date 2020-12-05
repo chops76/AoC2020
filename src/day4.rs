@@ -48,7 +48,7 @@ mod tests {
 
 	#[test]
 	fn day4_test4() {
-		let pp = Passport::new(vec!["byr:2003"]);
+		let pp = Passport::new(vec!["byr:20a3"]);
 		assert_eq!(pp.validate_byr(), false); 
 	}
 

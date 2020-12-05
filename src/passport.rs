@@ -57,23 +57,38 @@ impl Passport
 
     pub fn validate_byr(&self) -> bool {
         self.byr.as_ref().unwrap().len() == 4 && 
-            (1920..=2002).contains(&self.byr.as_ref().unwrap().parse::<u32>().unwrap())
+            match &self.byr.as_ref().unwrap().parse::<u32>() {
+                Err(_) => false,
+                Ok(v) => (1920..=2002).contains(v)
+            }
     }
     
     pub fn validate_iyr(&self) -> bool {
         self.iyr.as_ref().unwrap().len() == 4 && 
-            (2010..=2020).contains(&self.iyr.as_ref().unwrap().parse::<u32>().unwrap())
+        match &self.iyr.as_ref().unwrap().parse::<u32>() {
+            Err(_) => false,
+            Ok(v) => (2010..=2020).contains(v)
+        }
     }
     
     pub fn validate_eyr(&self) -> bool {
         self.eyr.as_ref().unwrap().len() == 4 && 
-            (2020..=2030).contains(&self.eyr.as_ref().unwrap().parse::<u32>().unwrap())
+        match &self.eyr.as_ref().unwrap().parse::<u32>() {
+            Err(_) => false,
+            Ok(v) => (2020..=2030).contains(v)
+        }
     }
     
     pub fn validate_hgt(&self) -> bool {
         match self.hgt.as_ref().unwrap().split_at(self.hgt.as_ref().unwrap().len() - 2) {
-            (h, "cm") => (150..=193).contains(&h.parse::<u32>().unwrap()),
-            (h, "in") => (59..=76).contains(&h.parse::<u32>().unwrap()),
+            (h, "cm") => match h.parse::<u32>() {
+                Err(_) => false,
+                Ok(v) => (150..=193).contains(&v)
+            },
+            (h, "in") => match h.parse::<u32>() {
+                Err(_) => false,
+                Ok(v) => (59..=76).contains(&v)
+            },
             _ => false
         }
     }
