@@ -16,13 +16,8 @@ fn num_yes(answers: &str) -> usize {
 }
 
 fn num_all(answers: &str) -> usize {
-	let people = answers.split("\n");
-	let sets = people.map(|s| s.chars().collect()).collect::<Vec<HashSet<char>>>();
-	let mut work_set = answers.chars().filter(|c| c.is_alphabetic()).collect::<HashSet<char>>();
-	for i in 0..sets.len() {
-		work_set = work_set.intersection(&sets[i]).copied().collect::<HashSet<char>>();
-	}
-	work_set.len()
+	let sets = answers.split("\n").map(|s| s.chars().collect()).collect::<Vec<HashSet<char>>>();
+	sets.iter().fold(sets[0].to_owned(), |i,j| i.intersection(j).copied().collect::<HashSet<char>>()).len()
 }
 
 pub fn main() {
