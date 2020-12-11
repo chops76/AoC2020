@@ -23,33 +23,13 @@ fn parse_input(path: &str) -> Grid {
     BufReader::new(f).lines().flatten().map(|s| parse_line(&s)).collect()
 }
 
-fn neighbors_occupied(grid: &Grid, x: usize, y: usize) -> u32 {
-	let mut sum = 0;
-	if x > 0 && grid[y][x-1] == Chair::Occupied {
-		sum += 1;
-	}
-	if x > 0 && y > 0 && grid[y-1][x-1] == Chair::Occupied {
-		sum += 1;
-	}
-	if y > 0 && grid[y-1][x] == Chair::Occupied {
-		sum += 1;
-	}
-	if y > 0 && x < grid[0].len() - 1 && grid[y-1][x+1] == Chair::Occupied {
-		sum += 1;
-	}
-	if x < grid[0].len() - 1 && grid[y][x+1] == Chair::Occupied {
-		sum += 1;
-	}
-	if x < grid[0].len() - 1 && y < grid.len() - 1 && grid[y+1][x+1] == Chair::Occupied {
-		sum += 1;
-	}
-	if y < grid.len() - 1 && grid[y+1][x] == Chair::Occupied {
-		sum += 1;
-	}
-	if x > 0 && y < grid.len() - 1 && grid[y+1][x-1] == Chair::Occupied {
-		sum += 1;
-	}
-	sum
+fn neighbors_occupied(grid: &Grid, x: i32, y: i32) -> i32 {
+	[(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1)]
+		.iter()
+		.filter(|(x_step, y_step)| x+x_step >= 0 && x+x_step < grid[0].len() as i32 &&
+								   y+y_step >= 0 && y+y_step < grid.len() as i32 &&
+								   grid[(y+y_step) as usize][(x+x_step) as usize] == Chair::Occupied)
+		.count() as i32
 }
 
 fn scan(grid: &Grid, start_x: usize, start_y: usize, x_incr: i32, y_incr: i32) -> bool
@@ -68,33 +48,10 @@ fn scan(grid: &Grid, start_x: usize, start_y: usize, x_incr: i32, y_incr: i32) -
 	false
 }
 
-fn neighbors_occupied2(grid: &Grid, x: usize, y: usize) -> u32 {
-	let mut sum = 0;
-	if scan(grid, x, y, -1, 0) {
-		sum += 1;
-	}
-	if scan(grid, x, y, -1, -1) {
-		sum += 1;
-	}
-	if scan(grid, x, y, 0, -1) {
-		sum += 1;
-	}
-	if scan(grid, x, y, 1, -1) {
-		sum += 1;
-	}
-	if scan(grid, x, y, 1, 0) {
-		sum += 1;
-	}
-	if scan(grid, x, y, 1, 1) {
-		sum += 1;
-	}
-	if scan(grid, x, y, 0, 1) {
-		sum += 1;
-	}
-	if scan(grid, x, y, -1, 1) {
-		sum += 1;
-	}
-	sum
+fn neighbors_occupied2(grid: &Grid, x: i32, y: i32) -> i32 {
+	[(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1)]
+		.iter().filter(|(x_step, y_step)| scan(grid, x as usize, y as usize, *x_step, *y_step))
+		.count() as i32
 }
 
 fn next_step(old_grid: &Grid, part2: bool) -> Grid {
@@ -103,8 +60,8 @@ fn next_step(old_grid: &Grid, part2: bool) -> Grid {
 	for y in 0..new_grid.len() {
 		for x in 0..new_grid[y].len() {
 			let neighbors = match part2 {
-				false => neighbors_occupied(&old_grid, x, y),
-				true => neighbors_occupied2(&old_grid, x, y) };
+				false => neighbors_occupied(&old_grid, x as i32, y as i32),
+				true => neighbors_occupied2(&old_grid, x as i32, y as i32) as i32 };
 			if old_grid[y][x] == Chair::Empty && neighbors == 0 {
 				new_grid[y][x] = Chair::Occupied;
 			} else if old_grid[y][x] == Chair::Occupied && 
