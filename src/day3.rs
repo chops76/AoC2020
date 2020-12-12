@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 type Grid = Vec<Vec<bool>>;
 
@@ -19,10 +20,20 @@ fn count_trees(grid: &Grid, x_step: usize, y_step: usize) -> u32 {
 
 pub fn main() {
 	let grid = parse_input("./input/day3/input.txt");
-	println!("Part 1: {}", count_trees(&grid, 3, 1));
-	println!("Part 2: {}", count_trees(&grid, 1, 1) * count_trees(&grid, 3, 1) *
-						   count_trees(&grid, 5, 1) * count_trees(&grid, 7, 1) *
-						   count_trees(&grid, 1, 2));
+
+	let p1_timer = Instant::now();
+    let p1_result = count_trees(&grid, 3, 1);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = count_trees(&grid, 1, 1) * count_trees(&grid, 3, 1) *
+		count_trees(&grid, 5, 1) * count_trees(&grid, 7, 1) *
+		count_trees(&grid, 1, 2);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

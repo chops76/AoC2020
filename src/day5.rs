@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 type Input = Vec<String>;
 
@@ -20,11 +21,21 @@ fn get_seat(code: &str) -> u32
 
 pub fn main() {
 	let seats = parse_input();
+
+	let p1_timer = Instant::now();
 	let mut ids = seats.iter().map(|s| get_seat(s)).collect::<Vec<u32>>();
 	ids.sort();
-	println!("Part 1: {}", ids.iter().max().unwrap());
-	println!("Part 2: {}", ids.iter().zip(ids.iter().skip(1))
-		.filter(|(a, b)| **b == *a + 2 ).map(|(a, _)| a ).sum::<u32>() + 1);
+    let p1_result = ids.iter().max().unwrap();
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = ids.iter().zip(ids.iter().skip(1))
+		.filter(|(a, b)| **b == *a + 2 ).map(|(a, _)| a ).sum::<u32>() + 1;
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

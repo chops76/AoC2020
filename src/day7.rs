@@ -1,6 +1,7 @@
 use std::io::{BufRead, BufReader};
 use std::collections::HashMap;
 use std::fs::File;
+use std::time::Instant;
 
 #[derive(Debug)]
 struct Entry {
@@ -53,8 +54,18 @@ fn num_inside(string: &str, input: &Input) -> usize {
 
 pub fn main() {
 	let input = parse_input("./input/day7/input.txt");
-	println!("Part 1: {}", input.iter().filter(|(name, _)| parent_of_shiny_gold(name, &input)).count() - 1);
-	println!("Part 2: {}", num_inside("shiny gold", &input));
+
+	let p1_timer = Instant::now();
+    let p1_result = input.iter().filter(|(name, _)| parent_of_shiny_gold(name, &input)).count() - 1;
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = num_inside("shiny gold", &input);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

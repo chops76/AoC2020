@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 type Input = Vec<i64>;
 
@@ -43,9 +44,18 @@ fn part2(nums: &Input, target: i64) -> i64 {
 
 pub fn main() {
 	let input = parse_input("./input/day9/input.txt");
-	let target = part1(&input, 25);
-	println!("Part1: {}", target);
-	println!("Part2: {}", part2(&input, target));
+
+	let p1_timer = Instant::now();
+    let target = part1(&input, 25);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", target);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = part2(&input, target);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

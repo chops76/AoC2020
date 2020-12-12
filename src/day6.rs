@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::Read;
 use std::collections::HashSet;
+use std::time::Instant;
 
 type Input = Vec<String>;
 
@@ -22,8 +23,18 @@ fn num_all(answers: &str) -> usize {
 
 pub fn main() {
 	let input = parse_input("./input/day6/input.txt");
-	println!("Part 1: {}", input.iter().map(|s| num_yes(&s)).sum::<usize>());
-	println!("Part 2: {}", input.iter().map(|s| num_all(&s)).sum::<usize>());
+
+	let p1_timer = Instant::now();
+    let p1_result = input.iter().map(|s| num_yes(&s)).sum::<usize>();
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = input.iter().map(|s| num_all(&s)).sum::<usize>();
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

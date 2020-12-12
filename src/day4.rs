@@ -1,6 +1,7 @@
 use std::io::Read;
 use std::fs::File;
 use crate::passport::Passport;
+use std::time::Instant;
 
 type Input = Vec<Passport>;
 
@@ -17,10 +18,18 @@ fn parse_input(path: &str) -> Input {
 
 pub fn main() {
 	let input = parse_input("./input/day4/input.txt");
-	let num_valid = input.iter().filter(|p| p.fields_populated()).count();
-	println!("Part 1: {}", num_valid);
-	let num_valid2 = input.iter().filter(|p| p.validate()).count();
-	println!("Part 2: {}", num_valid2);
+
+	let p1_timer = Instant::now();
+    let p1_result = input.iter().filter(|p| p.fields_populated()).count();
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = input.iter().filter(|p| p.validate()).count();
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

@@ -1,6 +1,7 @@
 use itertools::Itertools;
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 type Input = Vec<u32>;
 
@@ -23,8 +24,17 @@ fn part2(nums: &Input) -> u32 {
 pub fn main() {
 	let nums = parse_input();
 
-	println!("Part 1: {}", part1(&nums));
-	println!("Part 2: {}", part2(&nums));
+	let p1_timer = Instant::now();
+    let p1_result = part1(&nums);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = part2(&nums);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

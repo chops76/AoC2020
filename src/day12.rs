@@ -1,6 +1,7 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
 use num::complex::Complex;
+use std::time::Instant;
 
 #[derive(Debug)]
 struct Command {
@@ -66,8 +67,18 @@ fn part2(cmds: &Input) -> i32 {
 
 pub fn main() {
 	let input = parse_input("./input/day12/input.txt");
-	println!("Part 1: {}", part1(&input));
-	println!("Part 2: {}", part2(&input));
+
+	let p1_timer = Instant::now();
+    let p1_result = part1(&input);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = part2(&input);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

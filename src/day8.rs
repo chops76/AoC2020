@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 #[derive(Debug)]
 #[derive(Clone)]
@@ -39,13 +40,9 @@ fn run_prog(prog: &Input) -> (i32, i32) {
 	(acc, ip)
 }
 
-pub fn main() {
-	let input = parse_input("./input/day8/input.txt");
-	let (acc, _) = run_prog(&input);
-	println!("Part 1: {}", acc);
-
-	for ip in 0..input.len() {
-		let mut modified = input.to_owned();
+fn part2(prog: &Input) -> i32 {
+	for ip in 0..prog.len() {
+		let mut modified = prog.to_owned();
 		if modified[ip].ins == "nop" {
 			modified[ip].ins = "jmp".to_string();
 		} else if modified[ip].ins == "jmp" {
@@ -53,10 +50,26 @@ pub fn main() {
 		}
 		let (acc, final_ip) = run_prog(&modified);
 		if final_ip == modified.len() as i32 {
-			println!("Part 2: {}", acc);
-			break;
+			return acc;
 		}
 	}
+	0
+}
+
+pub fn main() {
+	let input = parse_input("./input/day8/input.txt");
+
+	let p1_timer = Instant::now();
+	let (p1_result, _) = run_prog(&input);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = part2(&input);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]

@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::time::Instant;
 
 #[derive(Debug)]
 #[derive(PartialEq)]
@@ -57,8 +58,18 @@ fn valid2(rule: &Password) -> bool
 
 pub fn main() {
 	let pw_rules = parse_input();
-	println!("Part 1: {}", num_valid1(&pw_rules));
-	println!("Part 2: {}", num_valid2(&pw_rules));
+
+	let p1_timer = Instant::now();
+    let p1_result = num_valid1(&pw_rules);
+    let p1_time = p1_timer.elapsed();
+	println!("Part 1: {}", p1_result);
+	println!("Part 1 Time: {:?}", p1_time);
+
+	let p2_timer = Instant::now();
+    let p2_result = num_valid2(&pw_rules);
+    let p2_time = p2_timer.elapsed();
+	println!("Part 2: {}", p2_result);
+	println!("Part 2 Time: {:?}", p2_time);
 }
 
 #[cfg(test)]
