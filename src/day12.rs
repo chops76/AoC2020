@@ -29,37 +29,27 @@ fn parse_input(path: &str) -> Input {
     BufReader::new(f).lines().flatten().map(|s| parse_line(&s)).collect()
 }
 
-fn part1(cmds: &Input) -> i32 {
-	let mut dir = Complex::new(1, 0);
+fn calc(cmds: &Input, p2: bool) -> i32 {
+	let mut dir = match p2 {
+		true => Complex::new(10,1),
+		false => Complex::new(1,0)
+		};
 	let mut pos = Complex::new(0, 0);
 	for cmd in cmds {
+		let mut delta = Complex::new(0, 0);
 		match cmd.direction {
-			'N' => pos += NORTH * cmd.distance,
-			'E' => pos += EAST * cmd.distance,
-			'S' => pos += SOUTH * cmd.distance,
-			'W' => pos += WEST * cmd.distance,
+			'N' => delta = NORTH * cmd.distance,
+			'E' => delta = EAST * cmd.distance,
+			'S' => delta = SOUTH * cmd.distance,
+			'W' => delta = WEST * cmd.distance,
 			'R' => dir *= NEG_I.powi(cmd.distance / 90),
 			'L' => dir *= NEG_I.powi(-cmd.distance / 90),
 			'F' => pos += dir * cmd.distance,
 			_ => println!("<<INVALID COMMAND>>")
 			}
-		}	
-	pos.re.abs() + pos.im.abs()
-}
-
-fn part2(cmds: &Input) -> i32 {
-	let mut dir = Complex::new(10, 1);
-	let mut pos = Complex::new(0, 0);
-	for cmd in cmds {
-		match cmd.direction {
-			'N' => dir += NORTH * cmd.distance,
-			'E' => dir += EAST * cmd.distance,
-			'S' => dir += SOUTH * cmd.distance,
-			'W' => dir += WEST * cmd.distance,
-			'R' => dir *= NEG_I.powi(cmd.distance / 90),
-			'L' => dir *= NEG_I.powi(-cmd.distance / 90),
-			'F' => pos += dir * cmd.distance,
-			_ => println!("<<INVALID COMMAND>>")
+		match p2 {
+			true => dir += delta,
+			false => pos += delta
 			}
 		}	
 	pos.re.abs() + pos.im.abs()
@@ -69,13 +59,13 @@ pub fn main() {
 	let input = parse_input("./input/day12/input.txt");
 
 	let p1_timer = Instant::now();
-    let p1_result = part1(&input);
+    let p1_result = calc(&input, false);
     let p1_time = p1_timer.elapsed();
 	println!("Part 1: {}", p1_result);
 	println!("Part 1 Time: {:?}", p1_time);
 
 	let p2_timer = Instant::now();
-    let p2_result = part2(&input);
+    let p2_result = calc(&input, true);
     let p2_time = p2_timer.elapsed();
 	println!("Part 2: {}", p2_result);
 	println!("Part 2 Time: {:?}", p2_time);
@@ -89,12 +79,12 @@ mod tests {
 	#[test]
 	fn day12_test1() {
 		let input = parse_input("./input/day12/test.txt");
-		assert_eq!(part1(&input),25);
+		assert_eq!(calc(&input, false),25);
 	}
 
 	#[test]
 	fn day12_test2() {
 		let input = parse_input("./input/day12/test.txt");
-		assert_eq!(part2(&input),286);
+		assert_eq!(calc(&input, true),286);
 	}
 }
