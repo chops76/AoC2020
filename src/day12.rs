@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use num::complex::Complex;
 
 #[derive(Debug)]
 struct Command {
@@ -8,6 +9,12 @@ struct Command {
 }
 
 type Input = Vec<Command>;
+
+static NORTH:Complex<i32> = Complex::new(0, 1);
+static SOUTH:Complex<i32> = Complex::new(0, -1);
+static EAST:Complex<i32> = Complex::new(1, 0);
+static WEST:Complex<i32> = Complex::new(-1, 0);
+static NEG_I:Complex<i32> = Complex::new(0, -1);
 
 fn parse_line(s: &str) -> Command {
 	Command {
@@ -22,65 +29,39 @@ fn parse_input(path: &str) -> Input {
 }
 
 fn part1(cmds: &Input) -> i32 {
-	let mut dir = 0;
-	let mut x: i32 = 0;
-	let mut y: i32 = 0;
+	let mut dir = Complex::new(1, 0);
+	let mut pos = Complex::new(0, 0);
 	for cmd in cmds {
 		match cmd.direction {
-			'N' => y += cmd.distance,
-			'E' => x += cmd.distance,
-			'S' => y -= cmd.distance,
-			'W' => x -= cmd.distance,
-			'R' => dir = (dir + cmd.distance / 90) % 4,
-			'L' => dir = (dir + 4 - cmd.distance / 90) % 4,
-			'F' => match dir {
-				0 => x += cmd.distance,
-				1 => y -= cmd.distance,
-				2 => x -= cmd.distance,
-				3 => y += cmd.distance,
-				_ => println!("<<INVALID DIR>>")
-			}
+			'N' => pos += NORTH * cmd.distance,
+			'E' => pos += EAST * cmd.distance,
+			'S' => pos += SOUTH * cmd.distance,
+			'W' => pos += WEST * cmd.distance,
+			'R' => dir *= NEG_I.powi(cmd.distance / 90),
+			'L' => dir *= NEG_I.powi(-cmd.distance / 90),
+			'F' => pos += dir * cmd.distance,
 			_ => println!("<<INVALID COMMAND>>")
-		}
-	}
-	x.abs() + y.abs()
+			}
+		}	
+	pos.re.abs() + pos.im.abs()
 }
 
 fn part2(cmds: &Input) -> i32 {
-	let mut way_x = 10;
-	let mut way_y = 1;
-	let mut x: i32 = 0;
-	let mut y: i32 = 0;
+	let mut dir = Complex::new(10, 1);
+	let mut pos = Complex::new(0, 0);
 	for cmd in cmds {
 		match cmd.direction {
-			'N' => way_y += cmd.distance,
-			'E' => way_x += cmd.distance,
-			'S' => way_y -= cmd.distance,
-			'W' => way_x -= cmd.distance,
-			'R' => {
-				for _ in 0..cmd.distance / 90 {
-					way_x ^= way_y;
-					way_y ^= way_x;
-					way_x ^= way_y;
-					way_y *= -1;
-				}
-			}
-			'L' => {
-				for _ in 0..cmd.distance / 90 {
-					way_x ^= way_y;
-					way_y ^= way_x;
-					way_x ^= way_y;
-					way_x *= -1;
-				}
-			}
-			'F' => {
-				x += way_x * cmd.distance; 
-				y += way_y * cmd.distance;
-			}
+			'N' => dir += NORTH * cmd.distance,
+			'E' => dir += EAST * cmd.distance,
+			'S' => dir += SOUTH * cmd.distance,
+			'W' => dir += WEST * cmd.distance,
+			'R' => dir *= NEG_I.powi(cmd.distance / 90),
+			'L' => dir *= NEG_I.powi(-cmd.distance / 90),
+			'F' => pos += dir * cmd.distance,
 			_ => println!("<<INVALID COMMAND>>")
-		}
-	}
-	x.abs() + y.abs()
+			}
+		}	
+	pos.re.abs() + pos.im.abs()
 }
 
 pub fn main() {
