@@ -48,14 +48,8 @@ fn part1(target: i64, input: &Input) -> i64 {
 }
 
 fn part2(input: &Input) -> i64 {
-    let mut sum: i64 = 0;
     let n:i64 = input.iter().map(|e| e.val).product();
-    for i in input {
-        let ni = n/i.val;
-        let mi = mod_inv(ni, i.val);
-        sum += i.offset * ni * mi;
-    }
-    sum % n
+    input.iter().map(|i| i.offset * n/i.val * mod_inv(n/i.val, i.val)).sum::<i64>() % n
 }
 
 pub fn main() {
@@ -81,7 +75,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn day12_test1() {
-        assert_eq!(25,25);
+    fn day13_test1() {
+        let (target, input) = parse_input("./input/day13/test.txt");
+        assert_eq!(part1(target, &input),295);
+    }
+
+    #[test]
+    fn day13_test2() {
+        let (_, input) = parse_input("./input/day13/test.txt");
+        assert_eq!(part2(&input),1068781);
+    }
+
+    #[test]
+    fn day13_test3() {
+        let (_, input) = parse_input("./input/day13/test2.txt");
+        assert_eq!(part2(&input),202);
+    }
+
+    #[test]
+    fn day13_test4() {
+        let (_, input) = parse_input("./input/day13/test3.txt");
+        assert_eq!(part2(&input),3417);
     }
 }
