@@ -43,7 +43,7 @@ fn parse_input(path: &str) -> (RuleList, Vec<String>) {
 }
 
 fn recur(string: &str, rule: usize, rules: &RuleList, hm: &mut HashMap<(String, usize), bool>) -> bool {
-//    println!("Recur string = {}, rule = {}", string, rule);
+ //   println!("Recur string = {}, rule = {}", string, rule);
     if hm.contains_key(&(string.to_string(), rule)) {
         //println!("Hash hit on {} rule {}", string, rule);
         return hm[&(string.to_string(), rule)];
@@ -84,11 +84,12 @@ fn recur(string: &str, rule: usize, rules: &RuleList, hm: &mut HashMap<(String, 
                     //hm.insert((string.to_string(), rule), false);
                     //return false;
                     //return recur(string, rule_list[0], rules, hm);
-                }
-                for r in 1..string.len() {
-                    if recur(&string[0..r], rule_list[0], rules, hm) && recur(&string[r..], rule_list[1], rules, hm) {
-                        hm.insert((string.to_string(), rule), true);
-                        return true;
+                } else {
+                    for r in 1..string.len() {
+                        if recur(&string[0..r], rule_list[0], rules, hm) && recur(&string[r..], rule_list[1], rules, hm) {
+                            hm.insert((string.to_string(), rule), true);
+                            return true;
+                        }
                     }
                 }
             }
@@ -171,21 +172,22 @@ pub fn main() {
     }
     */
     let mut hm: HashMap<(String, usize), bool> = HashMap::new();
-    println!("{}", recur("bbbaaabbbbbaaabbabaabbaa",0,&rules,&mut hm));
+ //   println!("{}", recur(&strings[0],0,&rules,&mut hm));
+//    println!("{}", recur("bbbaaabbbbbaaabbabaabbaa",0,&rules,&mut hm));
 //    println!("{}", recur("bbbaaabb",42,&rules,&mut hm));
     //println!("{}", recur("a",41,&rules,&mut hm));
-    println!("{}", recur("a",67,&rules,&mut hm));
+//    println!("{}", recur("a",67,&rules,&mut hm));
  //   println!("{}", recur("bbbaaabbabaabbaa",11,&rules,&mut hm));
 
  //       build(&rules);
 
-    /*
+    
     let p1_timer = Instant::now();
     let p1_result = part1(&rules, &strings);
     let p1_time = p1_timer.elapsed();
     println!("Part 1: {}", p1_result);
     println!("Part 1 Time: {:?}", p1_time);
-    
+   /*
 
     let p2_timer = Instant::now();
     let p2_result = part2(&input);
@@ -202,6 +204,8 @@ mod tests {
 
     #[test]
     fn day19_test1() {
-        assert_eq!(0,0);
+        let mut hm: HashMap<(String, usize), bool> = HashMap::new();
+        let (rules, strings) = parse_input("./input/day19/input.txt");
+        assert_eq!(recur(&strings[0],0,&rules,&mut hm),true);
     }
 }
