@@ -33,6 +33,19 @@ fn prec2(op: char) -> u32 {
     }
 }
 
+fn process_op(values: &mut Vec<i64>, ops: &mut Vec<char>) {
+    let val2 = values[values.len()-1];
+    values.pop();
+     
+    let val1 = values[values.len()-1];
+    values.pop();
+     
+    let op = ops[ops.len()-1];
+    ops.pop();
+     
+    values.push(apply_op(val1, val2, op));
+}
+
 fn eval(tokens: &str, part2: bool) -> i64 {
     let mut values: Vec<i64> = Vec::new();
     let mut ops: Vec<char> = Vec::new();
@@ -61,16 +74,7 @@ fn eval(tokens: &str, part2: bool) -> i64 {
         else if expr[i] == ')' {
             while ops.len() != 0 && ops[ops.len()-1] != '('
             {
-                let val2 = values[values.len()-1];
-                values.pop();
-                 
-                let val1 = values[values.len()-1];
-                values.pop();
-                 
-                let op = ops[ops.len()-1];
-                ops.pop();
-                 
-                values.push(apply_op(val1, val2, op));
+                process_op(&mut values, &mut ops);
             }
             
             if ops.len() != 0 {
@@ -86,16 +90,7 @@ fn eval(tokens: &str, part2: bool) -> i64 {
             };
 
             while ops.len() != 0 && prec(ops[ops.len()-1]) >= prec(expr[i]) {
-                let val2 = values[values.len()-1];
-                values.pop();
-                 
-                let val1 = values[values.len()-1];
-                values.pop();
-                 
-                let op = ops[ops.len()-1];
-                ops.pop();
-                 
-                values.push(apply_op(val1, val2, op));
+                process_op(&mut values, &mut ops);
             }
              
             ops.push(expr[i]);
@@ -104,16 +99,7 @@ fn eval(tokens: &str, part2: bool) -> i64 {
     }
      
     while ops.len() != 0 {
-        let val2 = values[values.len()-1];
-        values.pop();
-                 
-        let val1 = values[values.len()-1];
-        values.pop();
-                 
-        let op = ops[ops.len()-1];
-        ops.pop();
-                 
-        values.push(apply_op(val1, val2, op));
+        process_op(&mut values, &mut ops);
     }
      
     values[values.len()-1]
