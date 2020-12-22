@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::env;
 
 mod day1;
@@ -55,6 +56,8 @@ fn main() {
 	if args.len() > 1 {
 		days[args[1].parse::<usize>().unwrap()-1]();
 	} else {
+		let total_timer = Instant::now();
+
 		for (day, main) in days.iter().enumerate() {
 			println!( "--------------------------" );
 			println!( "Day {}",	day + 1	);
@@ -62,5 +65,8 @@ fn main() {
 			main();
 			println!();
 		}
+
+		let total_time = total_timer.elapsed();
+		println!("Total Time: {:?}", total_time);
 	}
 }
