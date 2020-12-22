@@ -91,7 +91,7 @@ fn part1(p1: &VecDeque<u64>, p2: &VecDeque<u64>) -> u64 {
 }
 
 pub fn main() {
-    let (p1, p2) = parse_input("./input/day22/test.txt");  
+    let (p1, p2) = parse_input("./input/day22/input.txt");  
     
     let p1_timer = Instant::now();
     let p1_result = part1(&p1, &p2);
