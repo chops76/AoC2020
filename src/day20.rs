@@ -1,7 +1,6 @@
 use std::io::Read;
 use std::fs::File;
 use std::time::Instant;
-use std::collections::HashMap;
 
 #[derive(Debug)]
 #[derive(Clone)]
@@ -96,7 +95,6 @@ fn calc_sides(tile: &Tile) -> Sides {
                  .collect::<String>();
     let left_str = (0..tile.pic.len()).rev().map(|n| tile.pic[n][0])
                  .map(|b| match b { true => '1', false => '0' }).collect::<String>();
-//    println!("ID {}  Top: {}  Right: {}  Bottom: {}  Left: {}", tile.id, top_str, right_str, bot_str, left_str);
     tmp_vec.push(u16::from_str_radix(&top_str, 2).unwrap());
     tmp_vec.push(u16::from_str_radix(&right_str, 2).unwrap());
     tmp_vec.push(u16::from_str_radix(&bot_str, 2).unwrap());
@@ -219,7 +217,6 @@ fn part2(input: &Input) -> u64 {
     
     grid.push(top_row);
     loop {
-        // get it going, based on tops
         let above = &grid[grid.len()-1][0];
         let (id, _, _) = find_match(side_vec[above.idx].bottom(above.is_flipped, above.rotation),
                                     side_vec[above.idx].id, &side_vec);
@@ -231,18 +228,10 @@ fn part2(input: &Input) -> u64 {
             let above = &grid[grid.len()-1][i];
             let above_bot = side_vec[above.idx].bottom(above.is_flipped, above.rotation);
             let (id, idx, flipped) = find_match(above_bot, side_vec[above.idx].id, &side_vec); 
-            if id == 0 {
-                println!("NO MATCH");
-                return 0;
-            }
+
             let mut new_rot = 0;
             while !matches(above_bot,side_vec[idx].top(flipped, new_rot)) {
-                
                 new_rot+=1;
-                if new_rot > 4 {
-                    println!("WHAAAA");
-                    return 0;
-                }
             }     
             cur_row.push(Pos {idx: idx, rotation: new_rot, is_flipped: flipped});      
         }
@@ -287,7 +276,6 @@ fn part2(input: &Input) -> u64 {
                picture2[y+1][x+19] && picture2[y+2][x+1] && picture2[y+2][x+4] && picture2[y+2][x+7] &&
                picture2[y+2][x+10] && picture2[y+2][x+13] && picture2[y+2][x+16] {
                    spots.push((x, y));
-                   println!("Found at x={}, y={}", x, y);
                }
         }
     }
