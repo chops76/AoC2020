@@ -36,17 +36,16 @@ fn init_vector(input: &Vec<u32>, len: usize) -> Vec<usize> {
     nodes
 }
 
-fn do_game(cups: &mut Vec<usize>, rounds: u64) {
+fn do_game(cups: &mut Vec<usize>, first: usize, rounds: u64) {
+    let mut current = first;
     for _ in 0..rounds {
-        let head = cups[0];
-
-        let n1 = cups[head];
+        let n1 = cups[current];
         let n2 = cups[n1];
         let n3 = cups[n2];
-        cups[head] = cups[n3];
-        cups[0] = cups[n3];
-
-        let mut dest = head - 1;
+        cups[current] = cups[n3];
+        let mut dest = current - 1;
+        current = cups[n3];
+        
         while dest == n1 || dest == n2 || dest == n3 || dest == 0 {
             dest = match dest == 0 {
                 true => cups.len()-1,
@@ -62,7 +61,7 @@ fn do_game(cups: &mut Vec<usize>, rounds: u64) {
 
 fn part2(input: &Input) -> u64 {
     let mut cups = init_vector(input, 1_000_000);
-    do_game(&mut cups, 10_000_000);
+    do_game(&mut cups, input[0] as usize, 10_000_000);
 
     let a = cups[1];
     let b = cups[a];
@@ -72,7 +71,7 @@ fn part2(input: &Input) -> u64 {
 
 fn part1(input: &Input) -> String {
     let mut cups = init_vector(input, input.len());
-    do_game(&mut cups, 100);
+    do_game(&mut cups, input[0] as usize, 100);
     let mut cur = cups[1];
     let mut ret_str = String::new();
     for _ in 0..input.len()-1 {
