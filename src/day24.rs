@@ -141,7 +141,7 @@ fn part2(input: &Input) -> usize {
 }
 
 pub fn main() {
-    let input = parse_input("./input/day24/input.txt");  
+    let input = parse_input("./input/day24/test.txt");  
     
     let p1_timer = Instant::now();
     let p1_result = part1(&input);
@@ -162,7 +162,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn day23_test1() { 
+    fn day24_test1() { 
         assert_eq!(0,0);
     }
 }
